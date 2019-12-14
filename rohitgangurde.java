@@ -11,7 +11,7 @@ public class rohitgangurde extends Bot
     Piece me;
     HashMap<String, Player> players; // Keyed off of player name
     String otherPlayerNames[];
-
+    HashMap<String, Integer> myGems;
     public static class Board
     {
         public Room rooms[][];
@@ -173,26 +173,99 @@ public class rohitgangurde extends Bot
     {
         this.board = new Board(board, pieces, gemLocations);
         String actions = "";
+        String [] availableGems;
+        availableGems= this.board.rooms[me.row][me.col].availableGems;
+        int minVal= 1000;
+        String theGemIWant="";
+//                    System.out.println("AVAILABLE GEMS:");
+        for(String gem : availableGems){
+            int count= myGems.get(gem);
+            if(count < minVal){
+                minVal = count;
+                theGemIWant = gem;
+            }
+        }
+        if (theGemIWant.equals("")) theGemIWant= "red";
+        myGems.put(theGemIWant, myGems.get(theGemIWant)+1);
+
 
         // Random move for dice1
         // THIS TAKES A RANDOM GUEST, CAN IMPROVE HERE
-        if(d1.equals("?")) d1 = guestNames[r.nextInt(guestNames.length)];
+        if(d1.equals("?")) d1 = guestName;
         Piece piece = pieces.get(d1);
+        HashMap <String, Integer> myMoves= new HashMap<String, Integer>();
         String[] moves = getPossibleMoves(piece);
+        for(String move : moves){
+            List<String> gemList= Arrays.asList(this.board.rooms[Integer.parseInt(move.split(",")[0])][Integer.parseInt(move.split(",")[1])].availableGems);
+            if (gemList.contains(theGemIWant))
+                myMoves.put(move,0);
+        }
+        if (myMoves.isEmpty() || piece.name != guestName){
+            int movei = r.nextInt(moves.length);
+            actions += "move," + d1 + "," + moves[movei];
+            this.board.movePlayer(piece, Integer.parseInt(moves[movei].split(",")[0]), Integer.parseInt(moves[movei].split(",")[1])); // Perform the move on my board
+        }
+        else{
+            for(String name : guestNames){
+                Piece thisPlayer = pieces.get(name);
+                String location = thisPlayer.row + ","+thisPlayer.col;
+                if (myMoves.keySet().contains(location)){
+                    myMoves.put(location, myMoves.get(location) + 1);
+                }
+            }
+            int maxVal=-11111111;
+            String theMoveIWant= "";
+            for(String move : myMoves.keySet()){
+                int count= myMoves.get(move);
+                if(count > maxVal){
+                    maxVal = count;
+                    theMoveIWant = move;
+                }
+            }
+            System.out.println("THE MOVE I WANT "+theMoveIWant);
+            actions += "move," + d1 + "," + theMoveIWant;
+            System.out.println("THE action I WANT "+actions);
+            this.board.movePlayer(piece, Integer.parseInt(theMoveIWant.split(",")[0]), Integer.parseInt(theMoveIWant.split(",")[1])); // Perform the move on my board
+        }
         // THIS TAKES RANDOM MOVE, CAN IMPROVE HERE
-        int movei = r.nextInt(moves.length);
-        actions += "move," + d1 + "," + moves[movei];
-        this.board.movePlayer(piece, Integer.parseInt(moves[movei].split(",")[0]), Integer.parseInt(moves[movei].split(",")[1])); // Perform the move on my board
+
 
         // Random move for dice2
         // THIS TAKES A RANDOM GUEST, CAN IMPROVE HERE
-        if(d2.equals("?")) d2 = guestNames[r.nextInt(guestNames.length)];
+        if(d2.equals("?")) d2 = guestName;
         piece = pieces.get(d2);
+        myMoves= new HashMap<String, Integer>();
         moves = getPossibleMoves(piece);
-        // THIS TAKES A RANDOM MOVE, CAN IMPROVE HERE
-        movei = r.nextInt(moves.length);
-        actions += ":move," + d2 + "," + moves[movei];
-        this.board.movePlayer(piece, Integer.parseInt(moves[movei].split(",")[0]), Integer.parseInt(moves[movei].split(",")[1])); // Perform the move on my board
+        for(String move : moves){
+            List<String> gemList= Arrays.asList(this.board.rooms[Integer.parseInt(move.split(",")[0])][Integer.parseInt(move.split(",")[1])].availableGems);
+            if (gemList.contains(theGemIWant))
+                myMoves.put(move,0);
+        }
+        if (myMoves.isEmpty() || piece.name != guestName){
+            int movei = r.nextInt(moves.length);
+            actions += ":move," + d2 + "," + moves[movei];
+            this.board.movePlayer(piece, Integer.parseInt(moves[movei].split(",")[0]), Integer.parseInt(moves[movei].split(",")[1])); // Perform the move on my board
+        }
+        else{
+            for(String name : guestNames){
+                Piece thisPlayer = pieces.get(name);
+                String location = thisPlayer.row + ","+thisPlayer.col;
+                if (myMoves.keySet().contains(location)){
+                    myMoves.put(location, myMoves.get(location) + 1);
+                }
+            }
+            int maxVal=-11111111;
+            String theMoveIWant= "";
+            for(String move : myMoves.keySet()){
+                int count= myMoves.get(move);
+                if(count > maxVal){
+                    maxVal = count;
+                    theMoveIWant = move;
+                }
+            }
+            actions += ":move," + d2 + "," + theMoveIWant;
+            this.board.movePlayer(piece, Integer.parseInt(theMoveIWant.split(",")[0]), Integer.parseInt(theMoveIWant.split(",")[1])); // Perform the move on my board
+        }
 
         // which card, CHOOSING RANDOM CARD, CAN IMPROVE HERE
         int i = r.nextInt(2);
@@ -220,7 +293,12 @@ public class rohitgangurde extends Bot
             else if(cardAction.startsWith("get"))
             {
                 // USING RANDOM HERE, CAN IMPROVE
-                if(cardAction.equals("get,")) actions += ":get," + this.board.rooms[me.row][me.col].availableGems[r.nextInt(this.board.rooms[me.row][me.col].availableGems.length)];
+                if(cardAction.equals("get,")){
+//                  actions += ":get," + this.board.rooms[me.row][me.col].availableGems[r.nextInt(this.board.rooms[me.row][me.col].availableGems.length)];
+
+                    actions += ":get," + theGemIWant;
+                }
+
                 else actions += ":" + cardAction;
             }
             else if(cardAction.startsWith("ask"))
@@ -334,6 +412,10 @@ public class rohitgangurde extends Bot
         super(playerName, guestName, numStartingGems, gemLocations, playerNames, guestNames);
         pieces = new HashMap<String, Piece>();
         ArrayList<String> possibleGuests = new ArrayList<String>();
+        myGems= new HashMap<String, Integer>();
+        myGems.put("red",0);
+        myGems.put("yellow",0);
+        myGems.put("green",0);
         for(String name:guestNames)
         {
             pieces.put(name, new Piece(name));
