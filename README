@@ -1,0 +1,219 @@
+Suspicion
+CS457
+12/13/2019
+Collin Beckly, Steven Kim, Rohit Gangurde
+**************************
+
+$ OVERVIEW :
+
+Suspicion is a game where players have to explore and seek for gems without revealing their own identities. 
+As a player, we have to perform better at the game by programming our own player as a representative of our group, 
+“rohitgangurde”. Our ultimate goal is to consistently beat player “RBotDumb” who makes completely random moves.
+
+INCLUDED FILES :
+* ArgHandler.java
+* Board.java.save
+* Bot.java
+* Card.java
+* Deck.java
+* Dice.java
+* Display.java
+* DummyBot.java
+* Location.java
+* Player.java
+* RBot.java
+* RBotDumb.java
+* Suspicion.java
+* TextDisplay.java
+* rohitgangurde.java
+* .class
+
+$ COMPILING AND RUNNING :
+
+To compile the class file, run this:
+
+$ javac --module-path /usr/local/apps/javafx/lib/ --add-modules javafx.base *.java
+
+After executing the make, run this:
+
+$ java --module-path /usr/local/apps/javafx/lib/ --add-modules javafx.base Suspicion -loadplayers players.txt [-tournament x]
+
+The tournament option is used to run the game for x amount of time. It outputs the statistics for the whole x amount of games.
+
+$ PROGRAM DESIGN AND IMPORTANT CONCEPTS :
+
+Analysis of the game:
+Suspicion is a simple and complicated game, where the players have to use deductive reasoning to find out who 
+each players are playing as. The game allows to ask others if they see the guest on their line of 
+sight(vertically and horizontally), where the answering person gets to say yes or no under cover. 
+Moreover, the players get to guess other players upon taking a specified Gem that is available for that 
+specific room. For example, if a player takes a red gem, then you can cross out every other candidate that 
+person might be, by selecting out the rooms where it does not have the red gem available. This game is a 
+great way to show how people could play mind games, if they know what they are doing.
+
+The difficulty of the game is not as high, since the game gives you choices and the available 
+options using action cards and invitational cards. Some things that might confuse others is the 
+bottom part(people’s portrait) of the card with the invitational cards, since those are two similar cards. 
+Also, the player can see him/herself when they were asked the question, which might confuse them furthermore.
+
+Rigorous estimate of the branching factor:
+Our branching factor is about 2*2*9*8*3*4*10*10 = 345600.
+2(number of dices)
+2(number of action cards)
+9(people to choose from who to ask or who to target)
+8(people to choose from excluding the target or who to ask)
+3(up to types of gems to pick)
+4(up to 4 directions a person can choose to move)
+10(people to choose with a wild dice throw(self inclusive))
+10(people to choose with another wild dice throw(self inclusive))
+
+The decisions that the player must make as follows:
+1. Who to ask among the real players.
+2. A specific person who they see.
+3. What kind of Gems they decide to steal.
+4. Where players get to go according to the dice.
+5. Which players get to move when you get a wild card roll.
+6. To make a non-obvious move that might trick others.
+
+Potential strategies:
+1. One can try to hide their identity by stealing a gem that others were expecting them to take.
+2. One can try to decide rather or not they want to move their guest according to the situation.
+3. One can try to narrow down on one person so they are guaranteed to get points for guessing the right person.
+
+$ TESTING :
+We tested using other players especially with RBotDumb. It was quite surprising how well RBotDumb win over 
+some of the players, especially against RBotS6 or S7. 
+
+Results RBotDumb vs rohitgangurde
+
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,57,64,1
+RBotDumb.class1,7,37,44,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5443,6143,69
+RBotDumb.class1,700,5147,5847,31
+
+---------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotDumb.class1,7,65,72,1
+rohitgangurde.class0,7,53,60,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5433,6133,65
+RBotDumb.class1,700,5136,5836,35
+
+--------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,65,72,1
+RBotDumb.class1,7,54,61,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5305,6005,61
+RBotDumb.class1,700,5063,5763,39
+
+----------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,57,64,1
+RBotDumb.class1,7,45,52,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5386,6086,64
+RBotDumb.class1,700,5177,5877,36
+
+----------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotS1.class1,7,52,59,1
+rohitgangurde.class0,7,45,52,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotS1.class1,693,5843,6536,67
+rohitgangurde.class0,700,5545,6245,33
+
+----------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,56,63,1
+RBotS3.class1,7,43,50,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5286,5986,57
+RBotS3.class1,700,5157,5857,43
+
+-----------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotS4.class1,7,62,69,1
+rohitgangurde.class0,7,54,61,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5404,6104,59
+RBotS4.class1,700,5173,5873,41
+
+-----------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,63,70,1
+RBotS5.class1,7,57,64,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5331,6031,52
+RBotS5.class1,700,5288,5988,48
+
+------------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,57,64,1
+RBotS6.class1,7,55,62,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5152,5852,70
+RBotS6.class1,700,4718,5418,30
+ 
+-------------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,7,72,79,1
+RBotS7.class1,7,30,37,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+rohitgangurde.class0,700,5973,6673,100
+RBotS7.class1,609,3352,3961,0
+ 
+--------------------------------------------------------------------------------------------------------------------
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotV4.class1,7,66,73,1
+rohitgangurde.class0,7,58,65,0
+**********************************************************
+Current tournament results...
+PlayerName,GuessScore,GemScore,TotalScore,wins
+RBotV4.class1,700,5949,6649,59
+rohitgangurde.class0,700,5706,6406,41
+ 
+---------------------------------------------------------------------------------------------------------------------
+
+DISCUSSION :
+
+We started off with getting to know the code. There was definitely a lot of trial and error with attempting to get things to run. Once we
+got games going, we found the method that we would mainly be modifying. We followed the advice given of taking the gem that we have the 
+least of. To do this, we created a map of gem names to number that we possessed. Whenever we would grab a gem, we would check which we 
+had the least of and get that one. With this change, we got to maybe a 60-65% win rate against dumb. Next we thought that we would change our
+player so that whenever we moved our character, we would move to an area that had gems we were missing. To do this, we would check the possible 
+moves that we could make, and find what gem we had the least of. If multiple locations contained that gem, we would see what location had the
+most other players (to at least partially hide our own player). After this change, we were running some games and found that it did not help 
+at all, and might have caused our win rate to go down a little. We found out that we had added a bit of a bug where we were moving everyone 
+into the location that we would want. Instead, for an opponent player we decided to move them a bit more intelligently. We are aware that we 
+could have done more to hide our identity and move strategically but all of us were busy with other classes and projects which posed limitations
+ on what we could implement. We could have looked at the entropy of our choice and guessed more strategically. As of now our Bot performs 
+better than the DumbBot consistently more often than not. So we feel we have performed over the established baseline. If we wouldn't have had 
+finals week coming up next week and whole bunch of other projects due, we could have invested more time into this and probably beat more bots.
+
+CONTRIBUTION :
+
+All three of us spent time doing pair programming, and worked on parts of the README together. 
+We all spent about 10-12 hours on this project collectively.
